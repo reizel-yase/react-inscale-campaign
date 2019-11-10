@@ -1,12 +1,18 @@
 import { all } from 'redux-saga/effects';
 
-import search from './search';
-import locate from './locate';
+import { 
+  list, 
+  add, 
+  searchByName, 
+  searchByDate 
+} from './campaign'
 
 export default function* rootSaga() {
   yield all([
-    search(),
-    locate()
+    list(),
+    add(),
+    searchByName(),
+    searchByDate()
   ])
 }
 

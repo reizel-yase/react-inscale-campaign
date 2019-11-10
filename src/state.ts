@@ -1,13 +1,19 @@
+import { Campaign } from "./types/campaign"
+
 export interface State {
-  results: string[]
+  campaigns: Campaign[]
   fetching: boolean
   fetched: boolean
+  adding: boolean
+  added: boolean
   error: any
 }
 
 export const initialState: State = {
-  results: [],
+  campaigns: [],
   fetching: false,
   fetched: false,
+  adding: false,
+  added: false,
   error: ''
 }

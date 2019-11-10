@@ -1,0 +1,22 @@
+@import "../../styles/variables.scss";
+
+.campaign-list {
+  text-align: center;
+
+  .spinner-grow {
+    background-color: $baseGreen;
+  }
+
+  .status {
+    height: 24px;
+    line-height: 24px;
+    vertical-align: middle;
+  }
+
+  .badge {
+    padding: 0;
+    height: 1em;
+    width: 1em;
+    border-radius: 50%;
+  }
+}

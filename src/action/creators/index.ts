@@ -1,15 +1,39 @@
 import * as types from '../types';
+import { Payload } from '../../types/campaign'
 
-export const getResults = (search: string) => {
+const getCampaigns = () => {
   return {
-    type: types.FETCH_RESULTS,
-    search
+    type: types.FETCH_CAMPAIGNS
   }
 }
 
-export const getLocation = (place: string) => {
+const addCampaigns = (campaigns: Payload[]) => {
   return {
-    type: types.FETCH_PLACE,
-    place
+    type: types.ADD_CAMPAIGNS,
+    payload: campaigns
   }
+}
+
+const searchCampaignsByName = (name: string) => {
+  return {
+    type: types.SEARCH_BY_NAME,
+    payload: name
+  }
+}
+
+const searchCampaignsByDate = (startDate: string, endDate: string) => {
+  return {
+    type: types.SEARCH_BY_DATE,
+    payload: {
+      startDate,
+      endDate
+    }
+  }
+}
+
+export {
+  getCampaigns,
+  addCampaigns,
+  searchCampaignsByName,
+  searchCampaignsByDate
 }

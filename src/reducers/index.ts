@@ -1,76 +1,112 @@
 import * as ActionTypes from '../action/types'
+import { Campaign } from '../types/campaign'
 
 export interface State {
-  results: string[]
+  campaigns: Campaign[]
   fetching: boolean
   fetched: boolean
-  location: LatLng
-  locating: boolean
-  located: boolean
+  adding: boolean
+  added: boolean
   error: any
 }
 
-export interface LatLng {
-  lat: number
-  lng: number
-}
-
 const initialState: State = {
-  results: [],
+  campaigns: [],
   fetching: false,
   fetched: false,
-  location: {
-    lat: 0,
-    lng: 0
-  },
-  locating: false,
-  located: false,
+  adding: false,
+  added: false,
   error: ''
 }
 
 
 const reducers = (state: State = initialState, action: any) => {
   switch (action.type) {
-    case ActionTypes.FETCH_RESULTS:
+    case ActionTypes.FETCH_CAMPAIGNS:
       return {
         ...state,
         fetching: true
       }
-    case ActionTypes.FETCH_RESULTS_SUCCESS:
+    case ActionTypes.FETCH_CAMPAIGNS_SUCCESS:
       return {
         ...state,
         fetching: false,
         fetched: true,
-        results: action.results,
+        campaigns: action.results,
         error: ''
       }
-    case ActionTypes.FETCH_RESULTS_ERROR:
+    case ActionTypes.FETCH_CAMPAIGNS_ERROR:
       return {
         ...state,
         fetching: false,
         fetched: false,
-        results: [],
+        campaigns: [],
         error: action.error
       }
-    case ActionTypes.FETCH_PLACE:
+    case ActionTypes.ADD_CAMPAIGNS:
       return {
         ...state,
-        locating: true
+        adding: true
       }
-    case ActionTypes.FETCH_PLACE_SUCCESS:
+    case ActionTypes.ADD_CAMPAIGNS_SUCCESS:
       return {
         ...state,
-        locating: false,
-        located: true,
-        location: action.results,
+        adding: false,
+        added: true,
+        campaigns: [
+          ...state.campaigns,
+          ...action.results
+        ],
         error: ''
       }
-    case ActionTypes.FETCH_PLACE_ERROR:
+    case ActionTypes.ADD_CAMPAIGNS_ERROR:
       return {
         ...state,
-        locating: false,
-        located: false,
-        location: {},
+        adding: false,
+        added: false,
+        campaigns: [],
+        error: action.error
+      }
+    case ActionTypes.SEARCH_BY_NAME:
+      return {
+        ...state,
+        fetching: true
+      }
+    case ActionTypes.SEARCH_BY_NAME_SUCCESS:
+      return {
+        ...state,
+        fetching: false,
+        fetched: true,
+        campaigns: action.results,
+        error: ''
+      }
+    case ActionTypes.SEARCH_BY_NAME_ERROR:
+      return {
+        ...state,
+        fetching: false,
+        fetched: false,
+        campaigns: [],
+        error: action.error
+      }
+    case ActionTypes.SEARCH_BY_DATE:
+      return {
+        ...state,
+        fetching: true
+      }
+    case ActionTypes.SEARCH_BY_DATE_SUCCESS:
+      return {
+        ...state,
+        fetching: false,
+        fetched: true,
+        campaigns: action.results,
+        error: ''
+      }
+    case ActionTypes.SEARCH_BY_DATE_ERROR:
+      return {
+        ...state,
+        fetching: false,
+        fetched: false,
+        campaigns: [],
         error: action.error
       }
     default:
