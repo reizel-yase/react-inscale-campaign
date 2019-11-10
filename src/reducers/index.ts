@@ -67,12 +67,12 @@ const reducers = (state: State = initialState, action: any) => {
         campaigns: [],
         error: action.error
       }
-    case ActionTypes.SEARCH_BY_NAME:
+    case ActionTypes.FILTER_CAMPAIGNS:
       return {
         ...state,
         fetching: true
       }
-    case ActionTypes.SEARCH_BY_NAME_SUCCESS:
+    case ActionTypes.FILTER_CAMPAIGNS_SUCCESS:
       return {
         ...state,
         fetching: false,
@@ -80,28 +80,7 @@ const reducers = (state: State = initialState, action: any) => {
         campaigns: action.results,
         error: ''
       }
-    case ActionTypes.SEARCH_BY_NAME_ERROR:
-      return {
-        ...state,
-        fetching: false,
-        fetched: false,
-        campaigns: [],
-        error: action.error
-      }
-    case ActionTypes.SEARCH_BY_DATE:
-      return {
-        ...state,
-        fetching: true
-      }
-    case ActionTypes.SEARCH_BY_DATE_SUCCESS:
-      return {
-        ...state,
-        fetching: false,
-        fetched: true,
-        campaigns: action.results,
-        error: ''
-      }
-    case ActionTypes.SEARCH_BY_DATE_ERROR:
+    case ActionTypes.FILTER_CAMPAIGNS_ERROR:
       return {
         ...state,
         fetching: false,

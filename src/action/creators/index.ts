@@ -14,17 +14,11 @@ const addCampaigns = (campaigns: Payload[]) => {
   }
 }
 
-const searchCampaignsByName = (name: string) => {
+const filterCampaigns = (name: string, startDate: string, endDate: string) => {
   return {
-    type: types.SEARCH_BY_NAME,
-    payload: name
-  }
-}
-
-const searchCampaignsByDate = (startDate: string, endDate: string) => {
-  return {
-    type: types.SEARCH_BY_DATE,
+    type: types.FILTER_CAMPAIGNS,
     payload: {
+      name,
       startDate,
       endDate
     }
@@ -34,6 +28,5 @@ const searchCampaignsByDate = (startDate: string, endDate: string) => {
 export {
   getCampaigns,
   addCampaigns,
-  searchCampaignsByName,
-  searchCampaignsByDate
+  filterCampaigns
 }

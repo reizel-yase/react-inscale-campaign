@@ -1,6 +1,8 @@
 import Axios from 'axios'
+import * as moment from "moment"
 import { all, call, put, takeLatest } from 'redux-saga/effects'
 import * as types from '../action/types'
+import { Campaign } from "../types/campaign"
 
 function* getCampaigns(action: any) {
   try {
@@ -47,58 +49,62 @@ function* addCampaigns(action: any) {
   }
 }
 
-function* filterByName(action: any) {
+// manual filtering 
+// because JSON server
+// does not filter
+// by date range
+function* filterCampaigns(action: any) {
   try {
-    const apiUrl = `http://localhost:3000/campaigns?name_like=${action.payload}`
+    const apiUrl = !!action.payload.name ? `http://localhost:3000/campaigns?name_like=${action.payload.name}` : `http://localhost:3000/campaigns`
     const response = yield call(fetch, apiUrl, {
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
       }
     })
     const data = yield call([response, response.json])
+    const filtered = action.payload.name || action.payload.startDate || action.payload.endDate
+    const filteredData = !!filtered ? data.filter((c: Campaign) => {
+      const startDate = moment(c.startDate, 'MM/DD/YYYY').format()
+      const endDate = moment(c.endDate, 'MM/DD/YYYY').format()
+
+      const inputStartDate = action.payload.startDate ? moment(action.payload.startDate, 'MM/DD/YYYY').format() : ''
+      const inputEndDate = action.payload.endDate? moment(action.payload.endDate, 'MM/DD/YYYY').format() : ''
+
+        if (inputStartDate && inputEndDate) {
+          if (inputStartDate <= inputEndDate) {
+              return inputStartDate >= startDate && inputEndDate <= endDate
+          }
+
+          return false
+        } else {
+          if (inputStartDate || inputEndDate) {
+            if (inputStartDate) {
+              return inputStartDate <= startDate
+            }
+
+            return inputEndDate >= endDate
+          }
+
+          return c
+        }
+    }) : data
+
     yield put({
-      type: types.SEARCH_BY_NAME_SUCCESS,
-      results: data
+      type: types.FILTER_CAMPAIGNS_SUCCESS,
+      results: filteredData
     });
   } catch (err) {
     yield put({
-      type: types.SEARCH_BY_NAME_ERROR,
+      type: types.FILTER_CAMPAIGNS_ERROR,
       error: err,
     });
   }
 }
 
-function* filterByDate(action: any) {
-  try {
-    const apiUrl = `http://localhost:3000/campaigns`
-    let query
-    
-    if (action.payload.startDate && action.payload.endDate) {
-      query = `?startDate_gte=${action.payload.startDate}&endDate_lte=${action.payload.endDate}`
-    } else {
-      if (action.payload.startDate) {
-        query = `?startDate_gte=${action.payload.startDate}`
-      } else {
-        query = `?endDate_lte=${action.payload.endDate}`
-      }
-    }
-
-    const response = yield call(fetch, apiUrl + query, {
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    })
-    const data = yield call([response, response.json])
-    yield put({
-      type: types.SEARCH_BY_DATE_SUCCESS,
-      results: data
-    });
-  } catch (err) {
-    yield put({
-      type: types.SEARCH_BY_DATE_ERROR,
-      error: err,
-    });
-  }
+function* filter() {
+  yield all([
+    takeLatest(types.FILTER_CAMPAIGNS, filterCampaigns)
+  ]);
 }
 
 function* list() {
@@ -113,21 +119,8 @@ function* add() {
   ]);
 }
 
-function* searchByName() {
-  yield all([
-    takeLatest(types.SEARCH_BY_NAME, filterByName)
-  ])
-}
-
-function* searchByDate() {
-  yield all([
-    takeLatest(types.SEARCH_BY_DATE, filterByDate)
-  ])
-}
-
 export {
   add,
   list,
-  searchByName,
-  searchByDate
+  filter
 }

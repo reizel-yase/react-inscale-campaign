@@ -33,7 +33,7 @@ const List = ({
           </thead>
           <tbody>
             {
-              data.map((c: Campaign, index: number) => {
+              !!data.length ? data.map((c: Campaign, index: number) => {
                 const curDate = moment(new Date()).format()
                 const start = moment(c.startDate, 'MM/DD/YYYY').format()
                 const end = moment(c.endDate, 'MM/DD/YYYY').format()
@@ -43,14 +43,16 @@ const List = ({
                   <td>{c.name}</td>
                   <td>{c.startDate}</td>
                   <td>{c.endDate}</td>
-                  <td>
+                  <td className="status-column">
                     <div className="status">
                       <Badge variant={!!isActive ? "success": "danger"}>&nbsp;</Badge> {!!isActive ? "Active" : "Inactive"}
                     </div>
                   </td>
                   <td>{c.Budget}</td>
                 </tr>
-              })
+              }) : <tr>
+                <td colSpan={5}>No campaigns found.</td>
+              </tr>
             }
           </tbody>
         </Table> : <Spinner animation="grow" />

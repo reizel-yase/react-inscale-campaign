@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { 
-  // Button,
   Col,
   Form,
   FormControl,
@@ -14,8 +13,7 @@ import {
 import { 
   addCampaigns, 
   getCampaigns,
-  searchCampaignsByName,
-  searchCampaignsByDate
+  filterCampaigns
 } from '../../action/creators'
 import List from "../../components/List"
 import { Campaign, Payload } from "../../types/campaign"
@@ -36,8 +34,9 @@ interface Props {
 interface AppState {
   fetching: boolean
   campaigns: Array<Campaign>
-  searchStartDate: '',
-  searchEndDate: ''
+  searchStartDate: string
+  searchEndDate: string
+  searchName: string
 }
 
 class AppComponent extends React.Component<Props, AppState> {
@@ -48,7 +47,8 @@ class AppComponent extends React.Component<Props, AppState> {
       campaigns: [],
       fetching: props.fetching || props.adding,
       searchStartDate: '',
-      searchEndDate: ''
+      searchEndDate: '',
+      searchName: ''
     }
 
     window.AddCampaigns = (campaigns: Payload[]) => {
@@ -73,34 +73,44 @@ class AppComponent extends React.Component<Props, AppState> {
     }
   }
 
+  filterCampaigns() {
+    const { searchStartDate, searchEndDate, searchName } = this.state
+
+    this.props.dispatch(filterCampaigns(searchName,searchStartDate, searchEndDate))
+  }
+
   searchByName(e: any) {
-    if (e.target.value) {
-      this.props.dispatch(searchCampaignsByName(e.target.value))
-    }
+    const { searchStartDate, searchEndDate } = this.state
+
+    this.setState({
+      searchName: e.target.value
+    })
+
+    this.props.dispatch(filterCampaigns(e.target.value, searchStartDate, searchEndDate))
   }
 
   searchByStartDate(e: any) {
-    if (e.target.value) {
-      this.setState({
-        searchStartDate: e.target.value
-      })
+    const { searchName, searchEndDate } = this.state
+    this.setState({
+      searchStartDate: e.target.value
+    })
 
-      this.props.dispatch(searchCampaignsByDate(e.target.value, this.state.searchEndDate))
-    }
+    this.props.dispatch(filterCampaigns(searchName, e.target.value, searchEndDate))
   }
 
   searchByEndDate(e: any) {
-    if (e.target.value) {
-      this.setState({
-        searchEndDate: e.target.value
-      })
+    const { searchName, searchStartDate } = this.state
 
-      this.props.dispatch(searchCampaignsByDate(this.state.searchStartDate, e.target.value))
-    }
+    this.setState({
+      searchEndDate: e.target.value
+    })
+
+    this.props.dispatch(filterCampaigns(searchName, searchStartDate, e.target.value))
   }
 
   render() {
     const { campaigns, fetching } = this.state
+
     return (
       <div id="app">
         <Navbar>
