@@ -115,7 +115,7 @@ class AppComponent extends React.Component<Props, AppState> {
       <div id="app">
         <Navbar>
           <Navbar.Brand href="#home">React Campaigns</Navbar.Brand>
-        </Navbar>        
+        </Navbar> 
         <div id="wrapper">
           <Row>
             <Col>
@@ -152,8 +152,6 @@ class AppComponent extends React.Component<Props, AppState> {
                 </Row>
               </div>
               <List data={campaigns} loading={fetching} />
-            </Col>
-            <Col>
             </Col>
           </Row>
         </div>                   

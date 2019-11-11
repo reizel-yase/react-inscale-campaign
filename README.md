@@ -10,7 +10,6 @@ This project was created for Inscale
 - After repository has been cloned, run:
   ```
   cd react-inscale-campaign
-  npm i
   json-server --watch db.json
   ```
   This is what the terminal/cmd will look like:
